@@ -24,8 +24,15 @@ export default [
   },
   {
     path: '/',
-    component: '@/layouts/index',
+    component: '../layouts/BasicLayout',
+    menu: {
+      flatMenu: true, // 子类往上提，不显示父类
+    },
     routes: [
+      {
+        path: '/',
+        redirect: '/welcome',
+      },
       {
         path: '/welcome',
         name: 'welcome',
@@ -54,10 +61,6 @@ export default [
         icon: 'table',
         path: '/list',
         component: './TableList',
-      },
-      {
-        path: '/',
-        redirect: '/welcome',
       },
       {
         path: '*',
