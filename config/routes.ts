@@ -12,32 +12,30 @@
  */
 export default [
   {
-    path: '/user',
-    layout: false,
-    routes: [
-      {
-        name: 'login',
-        path: '/user/login',
-        component: './User/Login',
-      },
-    ],
-  },
-  {
     path: '/',
-    component: '../layouts/BasicLayout',
-    menu: {
-      flatMenu: true, // 子类往上提，不显示父类
-    },
+    component: '@/layouts/BasicLayout',
+    flatMenu: true,
     routes: [
       {
         path: '/',
         redirect: '/welcome',
       },
       {
-        path: '/welcome',
+        path: '/user',
+        layout: false,
+        routes: [
+          {
+            name: 'login',
+            path: '/user/login',
+            component: './User/Login',
+          },
+        ],
+      },
+      {
+        path: 'welcome',
         name: 'welcome',
         icon: 'smile',
-        component: './Welcome',
+        component: '@/pages/Welcome',
       },
       {
         path: '/admin',
