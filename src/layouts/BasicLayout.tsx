@@ -7,7 +7,8 @@ import { Outlet } from 'umi';
 export default function Layout() {
   return (
     <div>
-      <div style={{ height: '300px', width: '300px', backgroundColor: 'yellow' }}></div>
+      {/*全局面包屑*/}
+      {/*生成一个好看的底部div*/}
       <Outlet />
     </div>
   );

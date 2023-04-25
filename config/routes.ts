@@ -61,6 +61,23 @@ export default [
         component: './TableList',
       },
       {
+        path: '/authorizationmanagement',
+        name: 'authorizationManagement',
+        icon: 'crown',
+        access: 'canAdmin',
+        routes: [
+          {
+            path: '/authorizationmanagement',
+            redirect: '/authorizationmanagement/user',
+          },
+          {
+            path: '/authorizationmanagement/user',
+            name: 'user',
+            component: './UserAuthorizationManagement',
+          },
+        ],
+      },
+      {
         path: '*',
         layout: false,
         component: './404',
