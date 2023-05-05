@@ -73,7 +73,7 @@ export default [
           {
             path: '/authorizationmanagement/user',
             name: 'user',
-            component: './UserAuthorizationManagement',
+            component: './AuthorizationManagement/UserAuthorizationManagement',
           },
         ],
       },

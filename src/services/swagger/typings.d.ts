@@ -110,3 +110,16 @@ declare namespace API {
     userStatus?: number;
   };
 }
+
+declare namespace AuthorizationManagementAPI {
+  type UserListItem = {
+    key?: number;
+    disabled?: boolean;
+    href?: string;
+    avatar?: string;
+    name?: string;
+    account?: string;
+    dept?: string;
+    callNo?: number;
+  };
+}
