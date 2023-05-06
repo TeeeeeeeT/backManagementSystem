@@ -6,7 +6,7 @@ import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { rule } from '@/services/swagger/authorizationManagementAPI';
 
 const UserAuthorizationManagement: React.FC = () => {
-  const [setCurrentRow] = useState<AuthorizationManagementAPI.UserListItem>();
+  const [currentRow, setCurrentRow] = useState<AuthorizationManagementAPI.UserListItem>();
   const [showAuthorizationModal, handleShowAuthorizationModal] = useState<boolean>(false);
 
   const columns: ProColumns<AuthorizationManagementAPI.UserListItem>[] = [
@@ -79,17 +79,23 @@ const UserAuthorizationManagement: React.FC = () => {
             {
               key: '1',
               label: '角色分配',
-              children: <TabContentItem title="角色分配"></TabContentItem>,
+              children: (
+                <TabContentItem title="角色分配" userName={currentRow?.name}></TabContentItem>
+              ),
             },
             {
               key: '2',
               label: '岗位分配',
-              children: <TabContentItem title="岗位分配"></TabContentItem>,
+              children: (
+                <TabContentItem title="岗位分配" userName={currentRow?.name}></TabContentItem>
+              ),
             },
             {
               key: '3',
               label: '群组分配',
-              children: <TabContentItem title="群组分配"></TabContentItem>,
+              children: (
+                <TabContentItem title="群组分配" userName={currentRow?.name}></TabContentItem>
+              ),
             },
           ]}
         ></Tabs>

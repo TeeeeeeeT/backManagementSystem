@@ -3,8 +3,10 @@ import { Button, Checkbox, message } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { rule } from '@/services/swagger/authorizationManagementAPI';
 
+// 接收父组件传递的参数验证
 export type TabContentItemProps = {
   title: string;
+  userName?: string;
 };
 
 interface Option {
@@ -50,8 +52,17 @@ const TabContentItem: React.FC<TabContentItemProps> = (props) => {
 
   return (
     <div>
-      <div style={{ padding: '0 20px', display: 'flex', justifyContent: 'space-between' }}>
-        <span>{props.title}</span>
+      <div
+        style={{
+          padding: '10px 20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: '16px',
+        }}
+      >
+        <div>
+          {props.userName}-{props.title}
+        </div>
         <Button type="primary" key="primary" onClick={() => {}} size={'small'}>
           保存
         </Button>
