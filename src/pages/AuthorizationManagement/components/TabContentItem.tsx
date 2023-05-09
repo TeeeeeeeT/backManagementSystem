@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, message } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import { rule } from '@/services/swagger/authorizationManagementAPI';
+import { getRoleList } from '@/services/swagger/authorizationManagementAPI';
 
 // 接收父组件传递的参数验证
 export type TabContentItemProps = {
@@ -9,46 +9,28 @@ export type TabContentItemProps = {
   userName?: string;
 };
 
-interface Option {
-  label: string;
-  value: string;
-  disabled?: boolean;
-}
-
-const options: Option[] = [
-  { label: '普通角色', value: 'Apple' },
-  { label: '典型库管理员', value: 'Pear' },
-  { label: '部门流程审批人', value: 'Orange' },
-  { label: '部门流程发起人', value: 'Orange1' },
-  { label: '部门流程查看人', value: 'Orange2' },
-  { label: '部门流程编辑人', value: 'Orange3' },
-  { label: '部门流程删除人', value: 'Orange4' },
-  { label: '系统管理员', value: 'Orange5' },
-  { label: '百科管理员', value: 'Orange6' },
-  { label: '党建管理员', value: 'Orange7' },
-];
-
-const getRoleOptions = async () => {
-  const hide = message.loading('正在获取角色列表');
-  try {
-    await rule({ current: 1, pageSize: 10 });
-    hide();
-    message.success('Added successfully');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('获取角色失败, 请重试!');
-    return false;
-  }
-};
-
-// 一进来就获取角色列表
-getRoleOptions();
-
 const TabContentItem: React.FC<TabContentItemProps> = (props) => {
   const onChange = (checkedValues: CheckboxValueType[]) => {
     console.log('checked = ', checkedValues);
   };
+  let [options, setOptions] = useState<AuthorizationManagementAPI.RoleListItem[]>([]);
+  const getRoleOptions = async () => {
+    const hide = message.loading('正在获取角色列表');
+    try {
+      // 把返回来的数据赋值给options
+      setOptions((await getRoleList()).data || []);
+      hide();
+      message.success('获取角色成功!');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('获取角色失败, 请重试!');
+      return false;
+    }
+  };
+  useEffect(() => {
+    getRoleOptions();
+  }, [props.title]);
 
   return (
     <div>

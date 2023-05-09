@@ -109,8 +109,8 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   }
 
   const body = (b && b.body) || req.body;
-  const { method, name, desc, key } = body;
-
+  const { method, account, name, dept, key } = body;
+  console.log('body', body);
   switch (method) {
     /* eslint no-case-declarations:0 */
     case 'delete':
@@ -139,25 +139,28 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
         return res.json(newRule);
       })();
       return;
-
     case 'update':
       (() => {
         let newRule = {};
         tableListDataSource = tableListDataSource.map((item) => {
           if (item.key === key) {
-            newRule = { ...item, desc, name };
-            return { ...item, desc, name };
+            newRule = { ...item, dept, name, account };
+            return { ...item, dept, name, account };
           }
           return item;
         });
         return res.json(newRule);
       })();
       return;
+    case 'put':
+
     default:
       break;
   }
 
   const result = {
+    success: true,
+    code: 200,
     list: tableListDataSource,
     pagination: {
       total: tableListDataSource.length,
@@ -167,7 +170,61 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   res.json(result);
 }
 
+// function updateRuleStatus(req: Request, res: Response) {
+//   const { key, status } = req.body;
+//   tableListDataSource = tableListDataSource.map((item) => {
+//     if (item.key === key) {
+//       item.status = status;
+//     }
+//     return item;
+//   });
+//   return res.json({ status: 'ok' });
+// }
+
+function getRoleList(req: Request, res: Response, u: string) {
+  const result = {
+    data: [
+      {
+        value: '1',
+        label: '超级管理员',
+        desc: '拥有所有权限',
+      },
+      {
+        value: '2',
+        label: '管理员',
+        desc: '拥有部分权限',
+      },
+      {
+        value: '3',
+        label: '普通用户',
+        desc: '拥有部分权限',
+      },
+      {
+        value: '4',
+        label: '知识管理员',
+        desc: '拥有部分权限',
+      },
+      {
+        value: '5',
+        label: '知识编辑员',
+        desc: '拥有部分权限',
+      },
+      {
+        value: '6',
+        label: '知识查看员',
+        desc: '拥有部分权限',
+      },
+    ],
+    total: 3,
+    success: true,
+  };
+
+  return res.json(result);
+}
+
 export default {
   'GET /api/getUserAuthMgData': getRule,
   'POST /api/rule': postRule,
+  'get /api/getRoleList': getRoleList,
+  'PUT /api/updateUserMessage': postRule,
 };

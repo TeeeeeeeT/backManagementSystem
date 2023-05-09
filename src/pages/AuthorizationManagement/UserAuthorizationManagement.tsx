@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Drawer, Tabs } from 'antd';
+import { Drawer, Tabs, Button, Modal, Form, Input, message } from 'antd';
 import { ProColumns } from '@ant-design/pro-components';
 import TabContentItem from '@/pages/AuthorizationManagement/components/TabContentItem';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { rule } from '@/services/swagger/authorizationManagementAPI';
+import { rule, updateRule } from '@/services/swagger/authorizationManagementAPI';
+import { PlusOutlined } from '@ant-design/icons';
+import { FormattedMessage } from '@@/exports';
 
 const UserAuthorizationManagement: React.FC = () => {
+  const [form] = Form.useForm();
   const [currentRow, setCurrentRow] = useState<AuthorizationManagementAPI.UserListItem>();
   const [showAuthorizationModal, handleShowAuthorizationModal] = useState<boolean>(false);
-
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const columns: ProColumns<AuthorizationManagementAPI.UserListItem>[] = [
     {
       title: '序号',
@@ -41,7 +45,8 @@ const UserAuthorizationManagement: React.FC = () => {
       valueType: 'option',
       align: 'center',
       render: (_, record) => [
-        <a
+        <Button
+          type={'primary'}
           key="authorization"
           onClick={() => {
             handleShowAuthorizationModal(true);
@@ -49,17 +54,74 @@ const UserAuthorizationManagement: React.FC = () => {
           }}
         >
           授权
-        </a>,
-        <a key="edit" href="src/pages">
+        </Button>,
+        <Button
+          type="primary"
+          key="edit"
+          onClick={() => {
+            setOpenEditModal(true);
+            setCurrentRow(record);
+            form.setFieldsValue(record);
+          }}
+        >
           编辑
-        </a>,
+        </Button>,
       ],
     },
   ];
 
+  const handleOk = async () => {
+    setConfirmLoading(true);
+    const hide = message.loading('正在更新');
+    try {
+      await updateRule({
+        key: currentRow?.key,
+        name: currentRow?.name,
+        dept: currentRow?.dept,
+        account: currentRow?.account,
+      });
+      hide();
+      setOpenEditModal(false);
+      setConfirmLoading(false);
+      message.success('更新 successful');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('更新 failed, please try again!');
+      setOpenEditModal(false);
+      setConfirmLoading(false);
+      return false;
+    }
+  };
+  const handleFormValuesChange = (changedValues: any, allValues: any) => {
+    setCurrentRow(allValues);
+  };
+  const onFinish = (values: any) => {
+    console.log('Success:', values);
+  };
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
   return (
     <PageContainer>
-      <ProTable headerTitle="查询表格" columns={columns} request={rule} />
+      <ProTable
+        headerTitle="查询表格"
+        columns={columns}
+        request={rule}
+        toolBarRender={() => [
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => {
+              form.resetFields();
+              setOpenEditModal(true);
+            }}
+          >
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+          </Button>,
+        ]}
+      />
 
       {/*授权弹窗*/}
       <Drawer
@@ -71,7 +133,6 @@ const UserAuthorizationManagement: React.FC = () => {
         }}
         closable={false}
       >
-        {/*写一个tabs标签页，分别是用户信息、角色信息、权限信息*/}
         <Tabs
           defaultActiveKey="1"
           tabBarStyle={{ background: 'black', padding: '0px 20px' }}
@@ -100,6 +161,45 @@ const UserAuthorizationManagement: React.FC = () => {
           ]}
         ></Tabs>
       </Drawer>
+
+      {/*编辑对话框*/}
+      <Modal
+        title="编辑用户"
+        open={openEditModal}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={() => setOpenEditModal(false)}
+      >
+        <Form
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          onValuesChange={handleFormValuesChange}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="用户名"
+            name="name"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="登录账号"
+            name="account"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="当前部门" name="dept">
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageContainer>
   );
 };

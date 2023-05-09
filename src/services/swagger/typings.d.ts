@@ -122,4 +122,26 @@ declare namespace AuthorizationManagementAPI {
     dept?: string;
     callNo?: number;
   };
+
+  type UserList = {
+    data?: UserListItem[];
+    total?: number;
+    success?: boolean;
+    code?: number;
+  };
+
+  // 角色列表接口返回格式
+  type RoleList = {
+    data?: RoleListItem[];
+    /** 列表的内容总数 */
+    total?: number;
+    success?: boolean;
+  };
+
+  // 角色列表数据对象格式
+  type RoleListItem = {
+    value?: string;
+    label?: string;
+    desc?: string;
+  };
 }

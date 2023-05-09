@@ -22,11 +22,21 @@ export async function rule(
   });
 }
 
-/** 新建规则 PUT /api/rule */
-export async function updateRule(options?: { [key: string]: any }) {
-  return request<API.RuleListItem>('/api/rule', {
-    method: 'PUT',
+/** 获取规则列表 GET /api/getRoleList */
+export async function getRoleList(options?: { [key: string]: any }) {
+  return request<AuthorizationManagementAPI.RoleList>('/api/getRoleList', {
+    method: 'GET',
     ...(options || {}),
+  });
+}
+
+/** 更新规则 PUT /api/rule */
+export async function updateRule(options?: { [key: string]: any }) {
+  return request<AuthorizationManagementAPI.UserList>('/api/updateUserMessage', {
+    method: 'PUT',
+    data: {
+      ...options,
+    },
   });
 }
 
