@@ -138,10 +138,22 @@ declare namespace AuthorizationManagementAPI {
     success?: boolean;
   };
 
+  type tableList = {
+    data?: tableListItem[];
+    total?: number;
+    success?: boolean;
+  };
+  type tableListItem = {
+    [key: string]: any;
+  };
+
   // 角色列表数据对象格式
   type RoleListItem = {
+    roleId?: string;
     value?: string;
     label?: string;
+    name?: string;
     desc?: string;
+    createTime?: string;
   };
 }

@@ -22,6 +22,27 @@ export async function rule(
   });
 }
 
+/** 获取表格数据列表 */
+export async function getTabelData(
+  url: string,
+  params?: {
+    // query
+    /** 当前的页码 */
+    current?: number;
+    /** 页面的容量 */
+    pageSize?: number;
+  },
+  options?: { [key: string]: any },
+) {
+  return request<AuthorizationManagementAPI.tableList>(url, {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 获取规则列表 GET /api/getRoleList */
 export async function getRoleList(options?: { [key: string]: any }) {
   return request<AuthorizationManagementAPI.RoleList>('/api/getRoleList', {

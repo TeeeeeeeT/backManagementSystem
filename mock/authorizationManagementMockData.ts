@@ -5,7 +5,6 @@ import { parse } from 'url';
 // mock 权限管理DataSource
 const genList = (current: number, pageSize: number) => {
   const tableListDataSource: AuthorizationManagementAPI.UserListItem[] = [];
-
   for (let i = 0; i < pageSize; i += 1) {
     const index = (current - 1) * 10 + i;
     tableListDataSource.push({
@@ -33,12 +32,13 @@ function getRule(req: Request, res: Response, u: string) {
     realUrl = req.url;
   }
   const { current = 1, pageSize = 10 } = req.query;
+  console.log('url parse', parse(realUrl, true));
   const params = parse(realUrl, true).query as unknown as API.PageParams &
     API.RuleListItem & {
       sorter: any;
       filter: any;
     };
-
+  console.log('params', params);
   let dataSource = [...tableListDataSource].slice(
     ((current as number) - 1) * (pageSize as number),
     (current as number) * (pageSize as number),
@@ -48,7 +48,9 @@ function getRule(req: Request, res: Response, u: string) {
     dataSource = dataSource.sort((prev, next) => {
       let sortNumber = 0;
       (Object.keys(sorter) as Array<keyof API.RuleListItem>).forEach((key) => {
+        // @ts-ignore
         let nextSort = next?.[key] as number;
+        // @ts-ignore
         let preSort = prev?.[key] as number;
         if (sorter[key] === 'descend') {
           if (preSort - nextSort > 0) {
@@ -87,7 +89,6 @@ function getRule(req: Request, res: Response, u: string) {
       });
     }
   }
-
   if (params.name) {
     dataSource = dataSource.filter((data) => data?.name?.includes(params.name || ''));
   }
@@ -98,7 +99,6 @@ function getRule(req: Request, res: Response, u: string) {
     pageSize,
     current: parseInt(`${params.current}`, 10) || 1,
   };
-
   return res.json(result);
 }
 
@@ -128,7 +128,6 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
           ][i % 2],
           name,
           owner: '曲丽丽',
-          desc,
           callNo: Math.floor(Math.random() * 1000),
           status: Math.floor(Math.random() * 10) % 2,
           updatedAt: moment().format('YYYY-MM-DD'),
@@ -182,45 +181,44 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
 // }
 
 function getRoleList(req: Request, res: Response, u: string) {
+  let realUrl = u;
+  if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
+    realUrl = req.url;
+  }
+  const { current = 1, pageSize = 10 } = req.query;
+  const tableListDataSource: AuthorizationManagementAPI.RoleListItem[] = [];
+  for (let i = 0; i < 80; i += 1) {
+    tableListDataSource.push({
+      roleId: 'role' + i,
+      name: '管理员' + i,
+      desc: '管理员',
+      // 将createTime格式化为hh:mm:ss
+      createTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+    });
+  }
+  let dataSource = tableListDataSource.slice(
+    ((current as number) - 1) * (pageSize as number),
+    (current as number) * (pageSize as number),
+  );
+  const params = parse(realUrl, true).query as unknown as API.PageParams &
+    AuthorizationManagementAPI.RoleListItem & {
+      sorter: any;
+      filter: any;
+    };
+  if (params.name) {
+    dataSource = dataSource.filter((data) => data?.name?.includes(params.name || ''));
+  }
   const result = {
-    data: [
-      {
-        value: '1',
-        label: '超级管理员',
-        desc: '拥有所有权限',
-      },
-      {
-        value: '2',
-        label: '管理员',
-        desc: '拥有部分权限',
-      },
-      {
-        value: '3',
-        label: '普通用户',
-        desc: '拥有部分权限',
-      },
-      {
-        value: '4',
-        label: '知识管理员',
-        desc: '拥有部分权限',
-      },
-      {
-        value: '5',
-        label: '知识编辑员',
-        desc: '拥有部分权限',
-      },
-      {
-        value: '6',
-        label: '知识查看员',
-        desc: '拥有部分权限',
-      },
-    ],
-    total: 3,
+    data: dataSource,
+    total: tableListDataSource.length,
     success: true,
+    pageSize,
+    current: parseInt(`${params.current}`, 10) || 1,
   };
-
   return res.json(result);
 }
+
+// 角色表格信息
 
 export default {
   'GET /api/getUserAuthMgData': getRule,

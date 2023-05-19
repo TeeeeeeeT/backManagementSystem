@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Drawer, Tabs, Button, Modal, Form, Input, message } from 'antd';
-import { ProColumns } from '@ant-design/pro-components';
-import TabContentItem from '@/pages/AuthorizationManagement/components/TabContentItem';
-import { PageContainer, ProTable } from '@ant-design/pro-components';
-import { rule, updateRule } from '@/services/swagger/authorizationManagementAPI';
+import { FormattedMessage } from '@umijs/max';
 import { PlusOutlined } from '@ant-design/icons';
-import { FormattedMessage } from '@@/exports';
+import { ProColumns } from '@ant-design/pro-components';
+import { PageContainer, ProTable } from '@ant-design/pro-components';
+import { Drawer, Tabs, Button, Modal, Form, Input, message } from 'antd';
+import { rule, updateRule } from '@/services/swagger/authorizationManagementAPI';
+import TabContentItem from '@/pages/AuthorizationManagement/components/TabContentItem';
 
-const UserAuthorizationManagement: React.FC = () => {
+const User: React.FC = () => {
   const [form] = Form.useForm();
   const [currentRow, setCurrentRow] = useState<AuthorizationManagementAPI.UserListItem>();
   const [showAuthorizationModal, handleShowAuthorizationModal] = useState<boolean>(false);
@@ -105,7 +105,7 @@ const UserAuthorizationManagement: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable
+      <ProTable<AuthorizationManagementAPI.UserListItem, API.PageParams>
         headerTitle="查询表格"
         columns={columns}
         request={rule}
@@ -204,4 +204,4 @@ const UserAuthorizationManagement: React.FC = () => {
   );
 };
 
-export default UserAuthorizationManagement;
+export default User;
