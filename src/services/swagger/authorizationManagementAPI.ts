@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-/** 获取规则列表 GET /api/rule */
+/** 获取用户数据列表 GET /api/rule */
 export async function rule(
   params: {
     // query

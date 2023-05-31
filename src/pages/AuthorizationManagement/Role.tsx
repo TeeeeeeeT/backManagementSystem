@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
-import { Drawer, Button, Tree, Tabs } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { Button, Drawer, Form, Input, Modal, Tabs, Tree } from 'antd';
 import type { DataNode, TreeProps } from 'antd/es/tree';
 import { getTabelData } from '@/services/swagger/authorizationManagementAPI';
-import { UserOutlined } from '@ant-design/icons';
+import { PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
+import DeptSelectedAndShow from '@/pages/AuthorizationManagement/components/DeptSelectedAndShow';
 
 const treeData: DataNode[] = [
   {
@@ -36,8 +37,12 @@ const treeData: DataNode[] = [
 ];
 
 const Role: React.FC = () => {
+  const [form] = Form.useForm();
   const [currentRow, setCurrentRow] = useState<AuthorizationManagementAPI.RoleListItem>();
   const [showAuthorizationModal, handleShowAuthorizationModal] = useState<boolean>(false);
+  const [modalTitle, setModalTitle] = useState<string>('');
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   const columns: ProColumns<AuthorizationManagementAPI.RoleListItem>[] = [
     {
       title: '序号',
@@ -49,6 +54,7 @@ const Role: React.FC = () => {
     {
       title: '名称',
       dataIndex: 'name',
+      valueType: 'textarea',
       align: 'center',
     },
     {
@@ -78,18 +84,32 @@ const Role: React.FC = () => {
         >
           授权
         </Button>,
-        <Button type="primary" key="edit">
+        <Button
+          type="primary"
+          key="edit"
+          onClick={() => {
+            setModalTitle('编辑角色');
+            setOpenModal(true);
+            form.setFieldsValue(record);
+          }}
+        >
           编辑
         </Button>,
       ],
     },
   ];
-
   const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
   };
   const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
     console.log('onCheck', checkedKeys, info);
+  };
+  const confirm = () => {
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setConfirmLoading(false);
+      setOpenModal(false);
+    }, 2000);
   };
 
   return (
@@ -115,7 +135,7 @@ const Role: React.FC = () => {
 
       {/*  授权弹窗 */}
       <Drawer
-        width={600}
+        width={'80%'}
         open={showAuthorizationModal}
         onClose={() => {
           setCurrentRow(undefined);
@@ -128,17 +148,49 @@ const Role: React.FC = () => {
             const id = String(i + 1);
             return {
               label: (
-                <span>
+                <span style={{ fontSize: '18px' }}>
                   <Icon />
                   {currentRow?.name}-用户分配
                 </span>
               ),
               key: id,
-              children: <div>用户</div>,
+              children: <DeptSelectedAndShow />,
             };
           })}
         />
       </Drawer>
+
+      {/*新增和编辑弹窗*/}
+      <Modal
+        title={modalTitle}
+        open={openModal}
+        onOk={confirm}
+        confirmLoading={confirmLoading}
+        onCancel={() => setOpenModal(false)}
+      >
+        <Form
+          form={form}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="角色名称"
+            name="name"
+            rules={[{ required: true, message: '请输入角色名称' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="角色描述"
+            name="desc"
+            rules={[{ required: true, message: '请输入角色描述' }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
     </PageContainer>
   );
 };

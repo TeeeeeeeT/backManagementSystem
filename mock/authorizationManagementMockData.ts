@@ -32,13 +32,11 @@ function getRule(req: Request, res: Response, u: string) {
     realUrl = req.url;
   }
   const { current = 1, pageSize = 10 } = req.query;
-  console.log('url parse', parse(realUrl, true));
   const params = parse(realUrl, true).query as unknown as API.PageParams &
     API.RuleListItem & {
       sorter: any;
       filter: any;
     };
-  console.log('params', params);
   let dataSource = [...tableListDataSource].slice(
     ((current as number) - 1) * (pageSize as number),
     (current as number) * (pageSize as number),
@@ -169,19 +167,8 @@ function postRule(req: Request, res: Response, u: string, b: Request) {
   res.json(result);
 }
 
-// function updateRuleStatus(req: Request, res: Response) {
-//   const { key, status } = req.body;
-//   tableListDataSource = tableListDataSource.map((item) => {
-//     if (item.key === key) {
-//       item.status = status;
-//     }
-//     return item;
-//   });
-//   return res.json({ status: 'ok' });
-// }
-
-function getRoleList(req: Request, res: Response, u: string) {
-  let realUrl = u;
+function getRoleList(req: Request, res: Response, requestUrl: string) {
+  let realUrl = requestUrl;
   if (!realUrl || Object.prototype.toString.call(realUrl) !== '[object String]') {
     realUrl = req.url;
   }
@@ -201,13 +188,12 @@ function getRoleList(req: Request, res: Response, u: string) {
     (current as number) * (pageSize as number),
   );
   const params = parse(realUrl, true).query as unknown as API.PageParams &
-    AuthorizationManagementAPI.RoleListItem & {
-      sorter: any;
-      filter: any;
-    };
+    AuthorizationManagementAPI.RoleListItem;
   if (params.name) {
     dataSource = dataSource.filter((data) => data?.name?.includes(params.name || ''));
   }
+  // 写一段高效的代码，params里面有什么属性是在AuthorizationManagementAPI.RoleListItem里面的属性，就过来过滤一下dataSource
+
   const result = {
     data: dataSource,
     total: tableListDataSource.length,
