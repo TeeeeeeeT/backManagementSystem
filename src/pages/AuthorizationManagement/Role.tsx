@@ -115,7 +115,7 @@ const Role: React.FC = () => {
   return (
     <PageContainer>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ProTable
+        <ProTable<AuthorizationManagementAPI.RoleListItem, API.PageParams>
           style={{ width: '60%' }}
           columns={columns}
           request={async () => await getTabelData('/api/getRoleList')}

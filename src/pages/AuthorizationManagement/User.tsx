@@ -141,21 +141,33 @@ const User: React.FC = () => {
               key: '1',
               label: '角色分配',
               children: (
-                <TabContentItem title="角色分配" userName={currentRow?.name}></TabContentItem>
+                <TabContentItem
+                  title="角色分配"
+                  titleKeyword="角色"
+                  userName={currentRow?.name}
+                ></TabContentItem>
               ),
             },
             {
               key: '2',
               label: '岗位分配',
               children: (
-                <TabContentItem title="岗位分配" userName={currentRow?.name}></TabContentItem>
+                <TabContentItem
+                  title="岗位分配"
+                  titleKeyword="岗位"
+                  userName={currentRow?.name}
+                ></TabContentItem>
               ),
             },
             {
               key: '3',
               label: '群组分配',
               children: (
-                <TabContentItem title="群组分配" userName={currentRow?.name}></TabContentItem>
+                <TabContentItem
+                  title="群组分配"
+                  titleKeyword="群组"
+                  userName={currentRow?.name}
+                ></TabContentItem>
               ),
             },
           ]}

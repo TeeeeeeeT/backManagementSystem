@@ -149,6 +149,7 @@ declare namespace AuthorizationManagementAPI {
 
   // 角色列表数据对象格式
   type RoleListItem = {
+    key?: string;
     roleId?: string;
     value?: string;
     label?: string;

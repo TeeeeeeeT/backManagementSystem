@@ -6,6 +6,7 @@ import { getRoleList } from '@/services/swagger/authorizationManagementAPI';
 // 接收父组件传递的参数验证
 export type TabContentItemProps = {
   title: string;
+  titleKeyword?: string;
   userName?: string;
 };
 
@@ -20,11 +21,11 @@ const TabContentItem: React.FC<TabContentItemProps> = (props) => {
       // 把返回来的数据赋值给options
       setOptions((await getRoleList()).data || []);
       hide();
-      message.success('获取角色成功!');
+      message.success(`获取${props.titleKeyword}成功!`);
       return true;
     } catch (error) {
       hide();
-      message.error('获取角色失败, 请重试!');
+      message.error(`获取${props.titleKeyword}失败, 请重试!`);
       return false;
     }
   };
@@ -57,11 +58,11 @@ const TabContentItem: React.FC<TabContentItemProps> = (props) => {
         {options.map((item) => {
           return (
             <Checkbox
-              value={item.value}
-              key={item.value}
+              value={item.roleId}
+              key={item.roleId}
               style={{ margin: '4px 0', fontSize: '16px' }}
             >
-              {item.label}
+              {item.name}
             </Checkbox>
           );
         })}

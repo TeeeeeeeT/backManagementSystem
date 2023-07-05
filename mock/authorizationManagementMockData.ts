@@ -78,10 +78,7 @@ function getRule(req: Request, res: Response, u: string) {
             if (!filter[key]) {
               return true;
             }
-            if (filter[key].includes(`${item[key]}`)) {
-              return true;
-            }
-            return false;
+            return filter[key].includes(`${item[key]}`);
           },
         );
       });
@@ -177,6 +174,7 @@ function getRoleList(req: Request, res: Response, requestUrl: string) {
   for (let i = 0; i < 80; i += 1) {
     tableListDataSource.push({
       roleId: 'role' + i,
+      key: 'role' + i,
       name: '管理员' + i,
       desc: '管理员',
       // 将createTime格式化为hh:mm:ss
